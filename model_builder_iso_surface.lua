@@ -209,8 +209,6 @@ pipeline_aaa = hg.CreateForwardPipelineAAAFromAssets("core", pipeline_aaa_config
 frame = 0
 
 while not keyboard:Down(hg.K_Escape) and hg.IsWindowOpen(win) do
-    render_was_reset, res_x, res_y = hg.RenderResetToWindow(win, res_x, res_y, hg.RF_VSync)
-
     dt = hg.TickClock()
     current_time = hg.time_to_sec_f(hg.GetClock())
 
