@@ -11,7 +11,7 @@ import harfang as hg
 from math import pi, sin, cos
 
 # Launch or not the movements on the iso surface spheres (cf imgui window and create_iso_surface_with_spheres_list())
-anim_spheres = False
+anim_spheres = True
 
 # Create a simple sphere with default params
 def create_iso_surface_sphere_default():
