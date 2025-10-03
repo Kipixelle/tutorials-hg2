@@ -21,10 +21,6 @@ function create_iso_surface_sphere_default()
         iso_sphere_value = 1.0,
         iso_sphere_exponent = 1.0
     }
-    -- iso_sphere["iso_sphere_pos"] = hg.Vec3(0, 0, 0)
-    -- iso_sphere["iso_sphere_radius"] = 1.0
-    -- iso_sphere["iso_sphere_value"] = 1.0
-    -- iso_sphere["iso_sphere_exponent"] = 1.0
     return iso_sphere
 end
 
@@ -37,10 +33,6 @@ function create_iso_surface_sphere(pos, radius)
         iso_sphere_value = 1.0,
         iso_sphere_exponent = 1.0
     }
-    -- iso_sphere["iso_sphere_pos"] = pos
-    -- iso_sphere["iso_sphere_radius"] = radius
-    -- iso_sphere["iso_sphere_value"] = 1.0
-    -- iso_sphere["iso_sphere_exponent"] = 1.0
     return iso_sphere
 end
 
@@ -272,7 +264,6 @@ while not keyboard:Down(hg.K_Escape) and hg.IsWindowOpen(win) do
         -- Settings about the scene
         changed, camera_distance = hg.ImGuiInputInt("Camera distance", camera_distance)
         changed, iso_surface_node_scale = hg.ImGuiInputVec3("Model node scale", iso_surface_node_scale)
-        -- hg.ImGuiText("ground size : x = {0}, y = {1}, z = {2}".format(ground_node_scale.x, ground_node_scale.y, ground_node_scale.z))
         hg.ImGuiText(string.format("ground size : x = %.2f, y = %.2f, z = %.2f", ground_node_scale.x, ground_node_scale.y, ground_node_scale.z))
 
         hg.ImGuiNewLine()
