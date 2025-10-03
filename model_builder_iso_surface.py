@@ -1,3 +1,5 @@
+# Model builder with iso surface
+
 '''
 Known issue : 2 axis are inverted in hg.IsoSurfaceSphere() function. "height"/"depth" parameters are inverted, and the axis "y"/"z" for the sphere position are also inverted ("y" correspond to the depth and "z" to the height).
 Ex: 
@@ -38,6 +40,7 @@ def create_iso_surface_spheres_list_circle(origin):
     sphere_list = []
     sphere_radius = 8.0
     radius = 15
+    # create 10 spheres
     for i in range(10):
         angle = i / 10 * pi * 2
         x = radius * cos(angle)
@@ -71,7 +74,12 @@ def create_iso_surface_with_spheres_list(iso_surface_bounds, iso_level, iso_scal
             # If the animation is not activate, just keep the height position of the sphere
             pos_z = iso_sphere_pos.z
 
-        hg.IsoSurfaceSphere(iso_surface, iso_surface_width, iso_surface_depth, iso_surface_height, iso_sphere_pos.x, iso_sphere_pos.y, pos_z, iso_sphere_radius, iso_sphere_value, iso_sphere_exponent)
+        hg.IsoSurfaceSphere(
+            iso_surface, 
+            iso_surface_width, iso_surface_depth, iso_surface_height, 
+            iso_sphere_pos.x, iso_sphere_pos.y, pos_z, 
+            iso_sphere_radius, iso_sphere_value, iso_sphere_exponent
+        )
 
     # Create a model builder
     mdl_builder = hg.ModelBuilder()
@@ -81,7 +89,14 @@ def create_iso_surface_with_spheres_list(iso_surface_bounds, iso_level, iso_scal
 
     # Convert iso surface to model
     material_idx = 0
-    _ = hg.IsoSurfaceToModel(mdl_builder, iso_surface, iso_surface_width, iso_surface_height, iso_surface_depth, material_idx, iso_level, iso_scale.x, iso_scale.y, iso_scale.z)
+    _ = hg.IsoSurfaceToModel(
+        mdl_builder, 
+        iso_surface, 
+        iso_surface_width, iso_surface_height, iso_surface_depth, 
+        material_idx, 
+        iso_level, 
+        iso_scale.x, iso_scale.y, iso_scale.z
+    )
 
     # Get the model from the isosurface sphere
     iso_surface_mdl = mdl_builder.MakeModel(vtx_layout)
@@ -132,7 +147,12 @@ outer_angle = hg.DegreeToRadian(35)
 spot_light_color = hg.Color(1, 1, 1, 1)
 spot_diffuse_intensity = 10
 spot_specular_intensity = 10
-spot_light = hg.CreateSpotLight(scene, spot_light_mtx, 0, inner_angle, outer_angle, spot_light_color, spot_diffuse_intensity, spot_light_color, spot_specular_intensity, 1, hg.LST_Map, 0.0001)
+spot_light = hg.CreateSpotLight(scene, spot_light_mtx, 0, 
+        inner_angle, outer_angle, 
+        spot_light_color, spot_diffuse_intensity, 
+        spot_light_color, spot_specular_intensity, 
+        1, hg.LST_Map, 0.0001
+    )
 
 # Init input
 keyboard = hg.Keyboard()
@@ -142,7 +162,7 @@ prg_ref = hg.LoadPipelineProgramRefFromAssets('core/shader/pbr.hps', res, hg.Get
 iso_surface_material = hg.CreateMaterial(prg_ref, 'uBaseOpacityColor', hg.Vec4(1.0, 0.75, 0.15), 'uOcclusionRoughnessMetalnessColor', hg.Vec4(1, 0.2, 0.5))
 
 # Generate iso surface mdl
-iso_surface_bounds = [50, 50, 50] # Size of the iso surface
+iso_surface_bounds = [50, 50, 50] # Size of the iso surface (width, height, depth)
 
 # Create a dict list containing the spheres parameters to provide to the iso surface (simple version, create spheres at the origin of the world. They can be configured in the imgui window)
 # iso_sphere_list = []
@@ -202,12 +222,15 @@ while not keyboard.Down(hg.K_Escape) and hg.IsWindowOpen(win):
     elif hg.ReadKeyboard().Key(hg.K_D):
         camera_rot_y = camera_rot_y - (1 * pi / 180)
     # Update camera node pos
-    camera_new_mtx = hg.TransformationMat4(hg.Vec3(iso_surface_width / 2 * scale_factor.x, iso_surface_height / 3 * scale_factor.y, iso_surface_depth / 2 * scale_factor.z), hg.Vec3(camera_rot_x, camera_rot_y, 0)) * hg.TransformationMat4(hg.Vec3(0, 0, -camera_distance), hg.Vec3(0, 0, 0))
+    camera_new_mtx = hg.TransformationMat4(hg.Vec3(iso_surface_width / 2 * scale_factor.x, iso_surface_height / 3 * scale_factor.y, iso_surface_depth / 2 * scale_factor.z), hg.Vec3(camera_rot_x, camera_rot_y, 0)) * hg.TransformationMat4(hg.Vec3(0, 0, -camera_distance),  hg.Vec3(0, 0, 0)) 
     camera_node.GetTransform().SetWorld(camera_new_mtx)
 
     # Update ground node scale
     # ground_node_debug_mtx = hg.TransformationMat4(hg.Vec3(iso_surface_width / 2 * scale_factor.x, 0, iso_surface_depth / 2 * scale_factor.z), hg.Vec3(0, 0, 0), hg.Vec3(iso_surface_width * scale_factor.x, 1, iso_surface_depth * scale_factor.z)) # ground at the exact size of the iso surface width/depth
-    ground_node_preview_mtx = hg.TransformationMat4(hg.Vec3(iso_surface_width / 2 * scale_factor.x, 0, iso_surface_depth / 2 * scale_factor.z), hg.Vec3(0, 0, 0), hg.Vec3(iso_surface_width * scale_factor.x * 2, 1, iso_surface_depth * scale_factor.z * 2)) # ground larger than the iso surface width/depth for beautiful preview
+    ground_node_preview_mtx = hg.TransformationMat4(
+        hg.Vec3(iso_surface_width / 2 * scale_factor.x, 0, iso_surface_depth / 2 * scale_factor.z), 
+        hg.Vec3(0, 0, 0), 
+        hg.Vec3(iso_surface_width * scale_factor.x * 2, 1, iso_surface_depth * scale_factor.z * 2)) # ground larger than the iso surface width/depth for beautiful preview
     ground_node.GetTransform().SetWorld(ground_node_preview_mtx)
     ground_node_scale = ground_node.GetTransform().GetScale()
 
